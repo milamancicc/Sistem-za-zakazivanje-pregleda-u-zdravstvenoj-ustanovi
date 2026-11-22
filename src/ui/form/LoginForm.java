@@ -31,10 +31,9 @@ public class LoginForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(Panel, BorderLayout.CENTER);
-
         Panel.setLayout(new GridBagLayout());
-        defaultEchoChar = txtLozinka.getEchoChar();
         setSize(540, 500);
+        defaultEchoChar = txtLozinka.getEchoChar();
     }
 
     /**
@@ -190,7 +189,7 @@ public class LoginForm extends javax.swing.JFrame {
         try {
             Doktor doktor = controller.prijaviSe(korisnickoIme, lozinka);
             this.dispose();
-            new MainForm().setVisible(true);
+            new MainForm(doktor).setVisible(true);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(InnerPanel, ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
         }

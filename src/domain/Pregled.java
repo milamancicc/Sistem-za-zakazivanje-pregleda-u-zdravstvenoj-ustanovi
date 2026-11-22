@@ -17,6 +17,8 @@ public class Pregled {
     private int brojUsluga;
     private int ukupnoTrajanje;
     private String napomena;
+    private Doktor doktor;
+    private Pacijent pacijent;
 
     public Pregled() {
     }
@@ -67,6 +69,22 @@ public class Pregled {
 
     public void setNapomena(String napomena) {
         this.napomena = napomena;
+    }
+
+    public Doktor getDoktor() {
+        return doktor;
+    }
+
+    public void setDoktor(Doktor doktor) {
+        this.doktor = doktor;
+    }
+
+    public Pacijent getPacijent() {
+        return pacijent;
+    }
+
+    public void setPacijent(Pacijent pacijent) {
+        this.pacijent = pacijent;
     }
     
     

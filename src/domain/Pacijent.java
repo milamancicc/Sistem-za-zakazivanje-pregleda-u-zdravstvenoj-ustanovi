@@ -18,6 +18,7 @@ public class Pacijent {
     private Pol pol;
     private int godine;
     private String kontakt;
+    private Grad grad;
 
     public Pacijent() {
     }
@@ -76,6 +77,14 @@ public class Pacijent {
 
     public void setKontakt(String kontakt) {
         this.kontakt = kontakt;
+    }
+
+    public Grad getGrad() {
+        return grad;
+    }
+
+    public void setGrad(Grad grad) {
+        this.grad = grad;
     }
     
     

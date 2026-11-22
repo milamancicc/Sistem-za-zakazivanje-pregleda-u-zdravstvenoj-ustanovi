@@ -10,10 +10,11 @@ package domain;
  */
 public class StavkaPregleda {
     private Pregled pregled;
-    private Usluga usluga;
+    private Long rb;
     private String simptomi;
     private String napomena;
     private boolean hitnost;
+    private Usluga usluga;
 
     public StavkaPregleda() {
     }
@@ -57,6 +58,15 @@ public class StavkaPregleda {
     public void setHitnost(boolean hitnost) {
         this.hitnost = hitnost;
     }
+
+    public Long getRb() {
+        return rb;
+    }
+
+    public void setRb(Long rb) {
+        this.rb = rb;
+    }
+    
     
     
 }

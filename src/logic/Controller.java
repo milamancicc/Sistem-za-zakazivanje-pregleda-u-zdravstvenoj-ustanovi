@@ -5,6 +5,8 @@
 package logic;
 
 import domain.Doktor;
+import domain.Pregled;
+import java.util.List;
 import repository.DatabaseRepository;
 
 /**
@@ -40,5 +42,16 @@ public class Controller {
             throw ex;
         }
         
+    }
+    
+    public List<Pregled> getPreglediByDoktor(Doktor doktor) throws Exception{
+        try{
+            databaseRepository.connect();
+            List<Pregled> pregledi = databaseRepository.getPreglediByDoktor(doktor);
+            databaseRepository.disconnect();
+            return pregledi;
+        }catch(Exception ex){
+            throw ex;
+        }
     }
 }

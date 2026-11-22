@@ -4,8 +4,16 @@
  */
 package repository;
 import domain.Doktor;
+import domain.Pacijent;
+import domain.Pol;
+import domain.Pregled;
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import repository.db.ConnectionUtil;
@@ -74,6 +82,43 @@ public class DatabaseRepository {
             return null;
         }catch(Exception ex){
             ex.printStackTrace();
+            throw ex;
+        }
+    }
+    
+    
+    public List<Pregled> getPreglediByDoktor(Doktor doktor) throws Exception{
+        try{
+            String query = "SELECT * FROM pregled p INNER JOIN pacijent pa ON p.idPacijenta = pa.idPacijenta WHERE idDoktora = ?";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, doktor.getIdDoktora());
+            ResultSet rs = ps.executeQuery();
+            List<Pregled> pregledi = new ArrayList<>();
+            while(rs.next()){
+                Pregled p = new Pregled();
+                p.setIdPregleda(rs.getLong("idPregleda"));
+                LocalDate datum = rs.getDate("datumIVreme").toLocalDate();
+                LocalTime vreme = rs.getTime("datumIVreme").toLocalTime();
+                p.setDatumIVreme(LocalDateTime.of(datum.getYear(), datum.getMonth(), datum.getDayOfMonth(), vreme.getHour(), vreme.getMinute()));
+                p.setOznakaOrdinacije(rs.getString("oznakaOrdinacije"));
+                p.setBrojUsluga(rs.getInt("brojUsluga"));
+                p.setUkupnoTrajanje(rs.getInt("ukupnoTrajanje"));
+                p.setNapomena(rs.getString("napomena"));
+                p.setDoktor(doktor);
+                Pacijent pacijent = new Pacijent();
+                pacijent.setIdPacijenta(rs.getLong("idPacijenta"));
+                pacijent.setIme(rs.getString("ime"));
+                pacijent.setPrezime(rs.getString("prezime"));
+                pacijent.setDatumRodjenja(rs.getDate("datumRodjenja").toLocalDate());
+                pacijent.setPol(Pol.valueOf(rs.getString("pol")));
+                pacijent.setGodine(rs.getInt("godine"));
+                pacijent.setKontakt(rs.getString("kontakt"));
+                pacijent.setGodine(rs.getInt("godine"));
+                p.setPacijent(pacijent);
+                pregledi.add(p);
+            }
+            return pregledi;
+        }catch(Exception ex){
             throw ex;
         }
     }

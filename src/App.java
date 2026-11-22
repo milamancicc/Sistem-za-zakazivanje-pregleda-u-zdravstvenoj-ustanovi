@@ -1,5 +1,7 @@
 
 import domain.Doktor;
+import domain.Pregled;
+import java.util.List;
 import repository.DatabaseRepository;
 import ui.form.LoginForm;
 
