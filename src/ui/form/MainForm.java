@@ -8,7 +8,13 @@ import domain.Doktor;
 import domain.Pregled;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.util.List;
+import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -20,32 +26,50 @@ import ui.components.PreglediTableModel;
  * @author PC
  */
 public class MainForm extends javax.swing.JFrame {
-
+    private Doktor doktor;
     /**
      * Creates new form MainForm
      */
     public MainForm(Doktor doktor) {
+        this.doktor = doktor;
         initComponents();
         setTitle("Glavni meni");
-        setSize(540, 500);
         setLocationRelativeTo(null);
+        
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(Panel, BorderLayout.CENTER);
+        
         Panel.removeAll();
         Panel.setLayout(new BorderLayout());
         Panel.setBorder(new EmptyBorder(12,12,12,12));
-        JPanel sadrzajPanel = new JPanel(new BorderLayout(0, 10));
+        
+        tblPregledi.getTableHeader().setOpaque(true);
+        tblPregledi.getTableHeader().setBackground(Color.white);
+        
+        tblPanel.removeAll();
+        tblPanel.setLayout(new BorderLayout());
+        tblPanel.add(jScrollPane1, BorderLayout.NORTH);
+        
+        infoPanel.removeAll();
+        infoPanel.setLayout(new BorderLayout());
+        infoPanel.add(dobrodosliPanel, BorderLayout.WEST);
+        infoPanel.add(odjaviPanel, BorderLayout.EAST);
+        
+        sadrzajPanel.removeAll();
+        sadrzajPanel.setLayout(new BorderLayout(0, 10));
         sadrzajPanel.add(infoPanel, BorderLayout.NORTH);
         sadrzajPanel.add(tblPanel, BorderLayout.CENTER);
-        sadrzajPanel.setBackground(Color.white);
+
         Panel.add(sadrzajPanel, BorderLayout.CENTER);
         jScrollPane1.getViewport().setOpaque(true);
         jScrollPane1.getViewport().setBackground(Color.white);
-        tblPregledi.getTableHeader().setOpaque(true);
-        tblPregledi.getTableHeader().setBackground(Color.white);
+        
         txtDobrodosli.setText("Dobrodošli, dr " + doktor.getIme() + " " + doktor.getPrezime());
         txtSpecijalizacija.setText("Zvanje: " + doktor.getZvanje());
-        initTable(doktor);
+        initTable(this.doktor);
+        setHeightOfTable();
+        repaint();
+        revalidate();
     }
 
     /**
@@ -58,15 +82,20 @@ public class MainForm extends javax.swing.JFrame {
     private void initComponents() {
 
         Panel = new javax.swing.JPanel();
+        sadrzajPanel = new javax.swing.JPanel();
         infoPanel = new javax.swing.JPanel();
+        dobrodosliPanel = new javax.swing.JPanel();
         txtDobrodosli = new javax.swing.JLabel();
         txtSpecijalizacija = new javax.swing.JLabel();
         txtNemaPregleda = new javax.swing.JLabel();
+        odjaviPanel = new javax.swing.JPanel();
+        btnOdjaviSe = new javax.swing.JButton();
         tblPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblPregledi = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        itmKreirajPregled = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -74,13 +103,70 @@ public class MainForm extends javax.swing.JFrame {
 
         Panel.setBackground(new java.awt.Color(18, 23, 42));
 
+        sadrzajPanel.setBackground(new java.awt.Color(255, 255, 255));
+
         infoPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        txtDobrodosli.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        dobrodosliPanel.setOpaque(false);
 
-        txtSpecijalizacija.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
+        txtDobrodosli.setFont(new java.awt.Font("Arial Narrow", 1, 18)); // NOI18N
+
+        txtSpecijalizacija.setFont(new java.awt.Font("Arial Narrow", 2, 14)); // NOI18N
 
         txtNemaPregleda.setFont(new java.awt.Font("Arial Narrow", 0, 12)); // NOI18N
+
+        javax.swing.GroupLayout dobrodosliPanelLayout = new javax.swing.GroupLayout(dobrodosliPanel);
+        dobrodosliPanel.setLayout(dobrodosliPanelLayout);
+        dobrodosliPanelLayout.setHorizontalGroup(
+            dobrodosliPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dobrodosliPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(dobrodosliPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtDobrodosli, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
+                    .addComponent(txtSpecijalizacija, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtNemaPregleda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        dobrodosliPanelLayout.setVerticalGroup(
+            dobrodosliPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dobrodosliPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(txtDobrodosli, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtSpecijalizacija, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(txtNemaPregleda, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        odjaviPanel.setOpaque(false);
+
+        btnOdjaviSe.setBackground(new java.awt.Color(51, 153, 255));
+        btnOdjaviSe.setFont(new java.awt.Font("Arial Narrow", 1, 18)); // NOI18N
+        btnOdjaviSe.setForeground(new java.awt.Color(255, 255, 255));
+        btnOdjaviSe.setText("Odjavi se");
+        btnOdjaviSe.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOdjaviSeActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout odjaviPanelLayout = new javax.swing.GroupLayout(odjaviPanel);
+        odjaviPanel.setLayout(odjaviPanelLayout);
+        odjaviPanelLayout.setHorizontalGroup(
+            odjaviPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, odjaviPanelLayout.createSequentialGroup()
+                .addContainerGap(51, Short.MAX_VALUE)
+                .addComponent(btnOdjaviSe, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(44, 44, 44))
+        );
+        odjaviPanelLayout.setVerticalGroup(
+            odjaviPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(odjaviPanelLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(btnOdjaviSe, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout infoPanelLayout = new javax.swing.GroupLayout(infoPanel);
         infoPanel.setLayout(infoPanelLayout);
@@ -88,21 +174,18 @@ public class MainForm extends javax.swing.JFrame {
             infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(infoPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtDobrodosli, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtSpecijalizacija, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtNemaPregleda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(dobrodosliPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(odjaviPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         infoPanelLayout.setVerticalGroup(
             infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(infoPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(txtDobrodosli, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtSpecijalizacija, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtNemaPregleda, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(dobrodosliPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(odjaviPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -110,6 +193,7 @@ public class MainForm extends javax.swing.JFrame {
 
         jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
 
+        tblPregledi.setFont(new java.awt.Font("Arial Narrow", 0, 12)); // NOI18N
         tblPregledi.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -122,42 +206,78 @@ public class MainForm extends javax.swing.JFrame {
             }
         ));
         tblPregledi.setOpaque(false);
+        tblPregledi.setSelectionBackground(new java.awt.Color(255, 255, 255));
         jScrollPane1.setViewportView(tblPregledi);
 
         javax.swing.GroupLayout tblPanelLayout = new javax.swing.GroupLayout(tblPanel);
         tblPanel.setLayout(tblPanelLayout);
         tblPanelLayout.setHorizontalGroup(
             tblPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(tblPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
-                .addContainerGap())
+            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(tblPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(tblPanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 627, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
         tblPanelLayout.setVerticalGroup(
             tblPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(0, 134, Short.MAX_VALUE)
+            .addGroup(tblPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(tblPanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        );
+
+        javax.swing.GroupLayout sadrzajPanelLayout = new javax.swing.GroupLayout(sadrzajPanel);
+        sadrzajPanel.setLayout(sadrzajPanelLayout);
+        sadrzajPanelLayout.setHorizontalGroup(
+            sadrzajPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sadrzajPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(sadrzajPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(infoPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(tblPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        sadrzajPanelLayout.setVerticalGroup(
+            sadrzajPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(sadrzajPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(infoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(tblPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(144, 144, 144))
         );
 
         javax.swing.GroupLayout PanelLayout = new javax.swing.GroupLayout(Panel);
         Panel.setLayout(PanelLayout);
         PanelLayout.setHorizontalGroup(
             PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(infoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelLayout.createSequentialGroup()
+            .addGroup(PanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tblPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(sadrzajPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         PanelLayout.setVerticalGroup(
             PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelLayout.createSequentialGroup()
-                .addComponent(infoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(tblPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addComponent(sadrzajPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jMenu1.setText("File");
+        jMenu1.setText("Pregledi");
+
+        itmKreirajPregled.setText("Kreiraj pregled");
+        itmKreirajPregled.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itmKreirajPregledActionPerformed(evt);
+            }
+        });
+        jMenu1.add(itmKreirajPregled);
+
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Edit");
@@ -169,7 +289,9 @@ public class MainForm extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 6, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -179,15 +301,31 @@ public class MainForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnOdjaviSeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOdjaviSeActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+        new LoginForm().setVisible(true);
+    }//GEN-LAST:event_btnOdjaviSeActionPerformed
+
+    private void itmKreirajPregledActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itmKreirajPregledActionPerformed
+        // TODO add your handling code here:
+        new KreirajPregledForm(this, true, this.doktor).setVisible(true);
+    }//GEN-LAST:event_itmKreirajPregledActionPerformed
+
    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Panel;
+    private javax.swing.JButton btnOdjaviSe;
+    private javax.swing.JPanel dobrodosliPanel;
     private javax.swing.JPanel infoPanel;
+    private javax.swing.JMenuItem itmKreirajPregled;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel odjaviPanel;
+    private javax.swing.JPanel sadrzajPanel;
     private javax.swing.JPanel tblPanel;
     private javax.swing.JTable tblPregledi;
     private javax.swing.JLabel txtDobrodosli;
@@ -210,5 +348,27 @@ public class MainForm extends javax.swing.JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Greska", JOptionPane.ERROR_MESSAGE);
         }
+    }
+    
+    private void setHeightOfTable(){
+        int max = 5;
+        int brRedova = tblPregledi.getRowCount();
+        int prikazanihRedova = Math.max(Math.min(brRedova, max), 1);
+        
+        int visinaReda = tblPregledi.getRowHeight();
+        int visinaHeadera = (tblPregledi.getTableHeader() != null) ? tblPregledi.getTableHeader().getPreferredSize().height : 25;
+        int visinaPodataka = prikazanihRedova * visinaReda;
+        int ukupnaVisina = visinaHeadera + visinaPodataka + 4;
+        
+        jScrollPane1.setPreferredSize(new Dimension(jScrollPane1.getPreferredSize().width, ukupnaVisina));
+        jScrollPane1.setMinimumSize(new Dimension(0, ukupnaVisina));
+        jScrollPane1.setMaximumSize(new Dimension(Integer.MAX_VALUE, ukupnaVisina));
+        
+        tblPanel.setPreferredSize(new Dimension(tblPanel.getPreferredSize().width, ukupnaVisina));
+        tblPanel.setMinimumSize(new Dimension(0, ukupnaVisina));
+        tblPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, ukupnaVisina));
+        
+        getContentPane().revalidate();
+        getContentPane().repaint();
     }
 }

@@ -122,4 +122,22 @@ public class DatabaseRepository {
             throw ex;
         }
     }
+    
+    
+    public void kreirajPregled(Pregled pregled) throws Exception{
+        try{
+            String query = "INSERT INTO pregled (datumIVreme, oznakaOrdinacije, brojUsluga, ukupnoTrajanje, napomena, idDoktora, idPacijenta) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setTimestamp(1, Timestamp.valueOf(pregled.getDatumIVreme()));
+            ps.setString(2, pregled.getOznakaOrdinacije());
+            ps.setInt(3, pregled.getBrojUsluga());
+            ps.setInt(4, pregled.getUkupnoTrajanje());
+            ps.setString(5, pregled.getNapomena());
+            ps.setLong(6, pregled.getDoktor().getIdDoktora());
+            ps.setLong(7, pregled.getPacijent().getIdPacijenta());
+            ps.execute();
+        }catch(Exception ex){
+            throw ex;
+        }
+    }
 }

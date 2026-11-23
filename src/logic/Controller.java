@@ -54,4 +54,16 @@ public class Controller {
             throw ex;
         }
     }
+    
+    public void kreirajPregled(Pregled pregled) throws Exception{
+        try{
+            databaseRepository.connect();
+            databaseRepository.kreirajPregled(pregled);
+            databaseRepository.commit();
+            databaseRepository.disconnect();
+        }catch(Exception ex){
+            databaseRepository.rollback();
+            throw ex;
+        }
+    }
 }
