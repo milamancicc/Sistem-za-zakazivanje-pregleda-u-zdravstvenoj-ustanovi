@@ -4,6 +4,7 @@
  */
 package repository;
 import domain.Doktor;
+import domain.Grad;
 import domain.Pacijent;
 import domain.Pol;
 import domain.Pregled;
@@ -124,20 +125,67 @@ public class DatabaseRepository {
     }
     
     
-    public void kreirajPregled(Pregled pregled) throws Exception{
+    public Pregled kreirajPregled() throws Exception{
         try{
-            String query = "INSERT INTO pregled (datumIVreme, oznakaOrdinacije, brojUsluga, ukupnoTrajanje, napomena, idDoktora, idPacijenta) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement ps = connection.prepareStatement(query);
-            ps.setTimestamp(1, Timestamp.valueOf(pregled.getDatumIVreme()));
-            ps.setString(2, pregled.getOznakaOrdinacije());
-            ps.setInt(3, pregled.getBrojUsluga());
-            ps.setInt(4, pregled.getUkupnoTrajanje());
-            ps.setString(5, pregled.getNapomena());
-            ps.setLong(6, pregled.getDoktor().getIdDoktora());
-            ps.setLong(7, pregled.getPacijent().getIdPacijenta());
-            ps.execute();
+            String query = "INSERT INTO pregled (datumIVreme, oznakaOrdinacije, brojUsluga, ukupnoTrajanje, napomena, idDoktora, idPacijenta) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL)";
+            PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            ps.executeUpdate();
+            ResultSet rs = ps.getGeneratedKeys();
+            Pregled pregled = new Pregled();
+            if(rs.next()){
+                pregled.setIdPregleda(rs.getLong(1));
+            }
+            return pregled;
         }catch(Exception ex){
             throw ex;
         }
     }
+    
+    public void kreirajPregled(Pregled pregled) throws Exception{
+        try{
+            String query = "UPDATE pregled SET datumIVreme = ?, oznakaOrdinacije = ?, napomena = ?, idDoktora = ?, idPacijenta = ? WHERE idPregleda = ?";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setTimestamp(1, Timestamp.valueOf(pregled.getDatumIVreme()));
+            ps.setString(2, pregled.getOznakaOrdinacije());
+            ps.setString(3, pregled.getNapomena());
+            ps.setLong(4, pregled.getDoktor().getIdDoktora());
+            ps.setLong(5, pregled.getPacijent().getIdPacijenta());
+            ps.setLong(6, pregled.getIdPregleda());
+            ps.execute();
+            
+        }catch(Exception ex){
+            throw ex;
+        }
+    }
+    
+    public List<Pacijent> getAllPacijent() throws Exception{
+        try{
+            String query = "SELECT * FROM pacijent INNER JOIN grad ON pacijent.zipkod = grad.zipkod";
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(query);
+            List<Pacijent> pacijenti = new ArrayList<>();
+            while(rs.next()){
+                Pacijent pacijent = new Pacijent();
+                pacijent.setIdPacijenta(rs.getLong("idPacijenta"));
+                pacijent.setIme(rs.getString("ime"));
+                pacijent.setPrezime(rs.getString("prezime"));
+                pacijent.setDatumRodjenja(rs.getDate("datumRodjenja").toLocalDate());
+                pacijent.setPol(Pol.valueOf(rs.getString("pol")));
+                pacijent.setGodine(rs.getInt("godine"));
+                pacijent.setKontakt(rs.getString("kontakt"));
+                
+                Grad grad = new Grad();
+                grad.setZipkod(rs.getLong("zipkod"));
+                grad.setNaziv(rs.getString("naziv"));
+                
+                pacijent.setGrad(grad);
+                
+                pacijenti.add(pacijent);
+            }
+            return pacijenti;
+        }catch(Exception ex){
+            throw ex;
+        }
+    }
+    
 }

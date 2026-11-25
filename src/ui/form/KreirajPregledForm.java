@@ -5,12 +5,23 @@
 package ui.form;
 
 import domain.Doktor;
+import domain.Pacijent;
+import domain.Pregled;
+import java.awt.BorderLayout;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFormattedTextField;
+import javax.swing.JOptionPane;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
+import logic.Controller;
 
 /**
  *
@@ -18,16 +29,29 @@ import javax.swing.text.MaskFormatter;
  */
 public class KreirajPregledForm extends javax.swing.JDialog {
 
+    private Doktor doktor;
+    private Pregled pregled;
+    
     /**
      * Creates new form KreirajPregledForm
      */
-    public KreirajPregledForm(java.awt.Frame parent, boolean modal, Doktor doktor) {
+    public KreirajPregledForm(java.awt.Frame parent, boolean modal, Doktor doktor, Pregled pregled) {
         super(parent, modal);
+        this.doktor = doktor;
+        this.pregled = pregled;
         setTitle("Kreiraj pregled");
         setLocationRelativeTo(null);
         initComponents();
         
+        infoPanel.removeAll();
+        infoPanel.setLayout(new BorderLayout());
+        infoPanel.add(jLabel6, BorderLayout.NORTH);
+        infoPanel.add(txtId, BorderLayout.SOUTH);
+        
+        txtId.setText("ID: " + pregled.getIdPregleda());
+        
         ubaciFldDatum();
+        fillCmb();
     }
 
     /**
@@ -43,45 +67,184 @@ public class KreirajPregledForm extends javax.swing.JDialog {
         unesiPodatkePanel = new javax.swing.JPanel();
         txtDatum = new javax.swing.JFormattedTextField();
         txtVreme = new javax.swing.JFormattedTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        txtOrdinacija = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtNapomena = new javax.swing.JTextArea();
+        jLabel5 = new javax.swing.JLabel();
+        cmbPacijenti = new javax.swing.JComboBox<>();
+        jButton1 = new javax.swing.JButton();
+        infoPanel = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
+        txtId = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         Panel.setBackground(new java.awt.Color(18, 23, 42));
+
+        unesiPodatkePanel.setBackground(new java.awt.Color(255, 255, 255));
+
+        txtDatum.setFont(new java.awt.Font("Arial Narrow", 0, 14)); // NOI18N
+        txtDatum.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDatumActionPerformed(evt);
+            }
+        });
+
+        txtVreme.setFont(new java.awt.Font("Arial Narrow", 0, 14)); // NOI18N
+
+        jLabel1.setFont(new java.awt.Font("Arial Narrow", 0, 14)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel1.setText("Datum");
+
+        jLabel2.setFont(new java.awt.Font("Arial Narrow", 0, 14)); // NOI18N
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel2.setText("Vreme");
+
+        jLabel3.setFont(new java.awt.Font("Arial Narrow", 0, 14)); // NOI18N
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel3.setText("Oznaka ordinacije");
+
+        jLabel4.setFont(new java.awt.Font("Arial Narrow", 0, 14)); // NOI18N
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel4.setText("Napomena");
+
+        txtNapomena.setColumns(20);
+        txtNapomena.setRows(5);
+        jScrollPane1.setViewportView(txtNapomena);
+
+        jLabel5.setFont(new java.awt.Font("Arial Narrow", 0, 14)); // NOI18N
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel5.setText("Pacijent");
+
+        cmbPacijenti.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jButton1.setText("Sačuvaj");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout unesiPodatkePanelLayout = new javax.swing.GroupLayout(unesiPodatkePanel);
         unesiPodatkePanel.setLayout(unesiPodatkePanelLayout);
         unesiPodatkePanelLayout.setHorizontalGroup(
             unesiPodatkePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(unesiPodatkePanelLayout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addGroup(unesiPodatkePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtDatum, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtVreme, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(225, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(unesiPodatkePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(unesiPodatkePanelLayout.createSequentialGroup()
+                        .addGroup(unesiPodatkePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(unesiPodatkePanelLayout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addGap(18, 18, 18)
+                                .addComponent(cmbPacijenti, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(unesiPodatkePanelLayout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtDatum, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1))
+                    .addGroup(unesiPodatkePanelLayout.createSequentialGroup()
+                        .addGroup(unesiPodatkePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(unesiPodatkePanelLayout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtOrdinacija, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(unesiPodatkePanelLayout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtVreme, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(unesiPodatkePanelLayout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 70, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         unesiPodatkePanelLayout.setVerticalGroup(
             unesiPodatkePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(unesiPodatkePanelLayout.createSequentialGroup()
-                .addGap(38, 38, 38)
-                .addComponent(txtDatum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(txtVreme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(128, Short.MAX_VALUE))
+                .addGroup(unesiPodatkePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(unesiPodatkePanelLayout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addGroup(unesiPodatkePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(cmbPacijenti, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(unesiPodatkePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(txtDatum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(unesiPodatkePanelLayout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addComponent(jButton1)))
+                .addGap(4, 4, 4)
+                .addGroup(unesiPodatkePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtVreme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8)
+                .addGroup(unesiPodatkePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(txtOrdinacija, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(2, 2, 2)
+                .addGroup(unesiPodatkePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE))
+                .addContainerGap(9, Short.MAX_VALUE))
+        );
+
+        infoPanel.setOpaque(false);
+
+        jLabel6.setFont(new java.awt.Font("Arial Narrow", 1, 24)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel6.setText("Kreiranje pregleda");
+
+        txtId.setFont(new java.awt.Font("Arial Narrow", 1, 18)); // NOI18N
+        txtId.setForeground(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout infoPanelLayout = new javax.swing.GroupLayout(infoPanel);
+        infoPanel.setLayout(infoPanelLayout);
+        infoPanelLayout.setHorizontalGroup(
+            infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel6)
+                .addGap(104, 104, 104))
+            .addGroup(infoPanelLayout.createSequentialGroup()
+                .addGap(165, 165, 165)
+                .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        infoPanelLayout.setVerticalGroup(
+            infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(infoPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout PanelLayout = new javax.swing.GroupLayout(Panel);
         Panel.setLayout(PanelLayout);
         PanelLayout.setHorizontalGroup(
             PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(unesiPodatkePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(infoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(unesiPodatkePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         PanelLayout.setVerticalGroup(
             PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelLayout.createSequentialGroup()
-                .addGap(66, 66, 66)
+                .addContainerGap()
+                .addComponent(infoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(unesiPodatkePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -100,10 +263,53 @@ public class KreirajPregledForm extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void txtDatumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDatumActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDatumActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        try{
+            Pacijent pacijent = (Pacijent) cmbPacijenti.getSelectedItem();
+            LocalDate datum = LocalDate.parse(txtDatum.getText(), DateTimeFormatter.ofPattern("dd.MM.yyyy."));
+            LocalTime vreme = LocalTime.parse(txtVreme.getText(), DateTimeFormatter.ofPattern("HH:mm"));
+            LocalDateTime datumIVreme = LocalDateTime.of(datum, vreme);
+            String oznakaOrdinacije = txtOrdinacija.getText();
+            String napomena = txtNapomena.getText();
+            
+            pregled.setDatumIVreme(datumIVreme);
+            pregled.setOznakaOrdinacije(oznakaOrdinacije);
+            pregled.setNapomena(napomena);
+            pregled.setPacijent(pacijent);
+            pregled.setDoktor(doktor);
+            
+            Controller controller = new Controller();
+            controller.kreirajPregled(pregled);
+            JOptionPane.showMessageDialog(this, "Uspešno kreiran pregled.", "Kreiran pregled", JOptionPane.INFORMATION_MESSAGE);
+        }catch(Exception ex){
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Greska", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Panel;
+    private javax.swing.JComboBox<String> cmbPacijenti;
+    private javax.swing.JPanel infoPanel;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JFormattedTextField txtDatum;
+    private javax.swing.JLabel txtId;
+    private javax.swing.JTextArea txtNapomena;
+    private javax.swing.JTextField txtOrdinacija;
     private javax.swing.JFormattedTextField txtVreme;
     private javax.swing.JPanel unesiPodatkePanel;
     // End of variables declaration//GEN-END:variables
@@ -120,5 +326,18 @@ public class KreirajPregledForm extends javax.swing.JDialog {
             ex.printStackTrace();
         }
         
+    }
+
+    private void fillCmb() {
+        try{
+            Controller controller = new Controller();
+            List<Pacijent> pacijenti = controller.getAllPacijent();
+            DefaultComboBoxModel cmbModel = new DefaultComboBoxModel();
+            cmbModel.addAll(pacijenti);
+            
+            cmbPacijenti.setModel(cmbModel);
+        }catch(Exception ex){
+            JOptionPane.showMessageDialog(this, ex, "Greska", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

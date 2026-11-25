@@ -5,6 +5,7 @@
 package logic;
 
 import domain.Doktor;
+import domain.Pacijent;
 import domain.Pregled;
 import java.util.List;
 import repository.DatabaseRepository;
@@ -55,15 +56,43 @@ public class Controller {
         }
     }
     
+    public Pregled kreirajPregled() throws Exception{
+        try{
+            databaseRepository.connect();
+            Pregled pregled = databaseRepository.kreirajPregled();
+            databaseRepository.commit();
+            return pregled;
+        }catch(Exception ex){
+            databaseRepository.rollback();
+            throw ex;
+        }finally{
+            databaseRepository.disconnect();            
+        }
+    }
+    
     public void kreirajPregled(Pregled pregled) throws Exception{
         try{
             databaseRepository.connect();
             databaseRepository.kreirajPregled(pregled);
             databaseRepository.commit();
-            databaseRepository.disconnect();
+            
         }catch(Exception ex){
             databaseRepository.rollback();
             throw ex;
+        }finally{
+            databaseRepository.disconnect();
         }
     }
+    
+    public List<Pacijent> getAllPacijent() throws Exception{
+        try{
+            databaseRepository.connect();
+            List<Pacijent> pacijenti = databaseRepository.getAllPacijent();
+            databaseRepository.disconnect();
+            return pacijenti;
+        }catch(Exception ex){
+            throw ex;
+        }
+    }
+    
 }

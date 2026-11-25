@@ -23,6 +23,7 @@ public class Pregled {
     public Pregled() {
     }
 
+
     public Long getIdPregleda() {
         return idPregleda;
     }

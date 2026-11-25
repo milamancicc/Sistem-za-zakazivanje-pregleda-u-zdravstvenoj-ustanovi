@@ -14,6 +14,8 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -308,8 +310,14 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnOdjaviSeActionPerformed
 
     private void itmKreirajPregledActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itmKreirajPregledActionPerformed
-        // TODO add your handling code here:
-        new KreirajPregledForm(this, true, this.doktor).setVisible(true);
+        try {
+            // TODO add your handling code here:
+            Controller controller = new Controller();
+            Pregled pregled = controller.kreirajPregled();
+            new KreirajPregledForm(this, true, this.doktor, pregled).setVisible(true);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_itmKreirajPregledActionPerformed
 
    

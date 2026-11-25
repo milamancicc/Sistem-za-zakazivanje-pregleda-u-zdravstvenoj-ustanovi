@@ -86,6 +86,16 @@ public class Pacijent {
     public void setGrad(Grad grad) {
         this.grad = grad;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(idPacijenta);
+        sb.append(". ").append(ime);
+        sb.append(" ").append(prezime);
+        return sb.toString();
+    }
+    
     
     
 }
