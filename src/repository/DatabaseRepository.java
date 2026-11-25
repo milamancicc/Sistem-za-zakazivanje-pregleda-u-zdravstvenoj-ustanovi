@@ -8,6 +8,8 @@ import domain.Grad;
 import domain.Pacijent;
 import domain.Pol;
 import domain.Pregled;
+import domain.StavkaPregleda;
+import domain.Usluga;
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
@@ -88,7 +90,7 @@ public class DatabaseRepository {
     }
     
     
-    public List<Pregled> getPreglediByDoktor(Doktor doktor) throws Exception{
+    public List<Pregled> vratiListuPregled(Doktor doktor) throws Exception{
         try{
             String query = "SELECT * FROM pregled p INNER JOIN pacijent pa ON p.idPacijenta = pa.idPacijenta WHERE idDoktora = ?";
             PreparedStatement ps = connection.prepareStatement(query);
@@ -141,16 +143,18 @@ public class DatabaseRepository {
         }
     }
     
-    public void kreirajPregled(Pregled pregled) throws Exception{
+    public void promeniPregled(Pregled pregled) throws Exception{
         try{
-            String query = "UPDATE pregled SET datumIVreme = ?, oznakaOrdinacije = ?, napomena = ?, idDoktora = ?, idPacijenta = ? WHERE idPregleda = ?";
+            String query = "UPDATE pregled SET datumIVreme = ?, oznakaOrdinacije = ?, brojUsluga = ?, ukupnoTrajanje = ?, napomena = ?, idDoktora = ?, idPacijenta = ? WHERE idPregleda = ?";
             PreparedStatement ps = connection.prepareStatement(query);
             ps.setTimestamp(1, Timestamp.valueOf(pregled.getDatumIVreme()));
             ps.setString(2, pregled.getOznakaOrdinacije());
-            ps.setString(3, pregled.getNapomena());
-            ps.setLong(4, pregled.getDoktor().getIdDoktora());
-            ps.setLong(5, pregled.getPacijent().getIdPacijenta());
-            ps.setLong(6, pregled.getIdPregleda());
+            ps.setInt(3, pregled.getBrojUsluga());
+            ps.setInt(4, pregled.getUkupnoTrajanje());
+            ps.setString(5, pregled.getNapomena());
+            ps.setLong(6, pregled.getDoktor().getIdDoktora());
+            ps.setLong(7, pregled.getPacijent().getIdPacijenta());
+            ps.setLong(8, pregled.getIdPregleda());
             ps.execute();
             
         }catch(Exception ex){
@@ -158,7 +162,7 @@ public class DatabaseRepository {
         }
     }
     
-    public List<Pacijent> getAllPacijent() throws Exception{
+    public List<Pacijent> vratiListuPacijent() throws Exception{
         try{
             String query = "SELECT * FROM pacijent INNER JOIN grad ON pacijent.zipkod = grad.zipkod";
             Statement statement = connection.createStatement();
@@ -187,5 +191,57 @@ public class DatabaseRepository {
             throw ex;
         }
     }
+    
+    public void obrisiPregled(Pregled pregled) throws Exception{
+        try{
+            String query = "DELETE FROM pregled WHERE idPregleda = ?";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, pregled.getIdPregleda());
+            ps.executeUpdate();
+        }catch(Exception ex){
+            throw ex;
+        }
+    }
+    
+    public List<Usluga> vratiListuUsluga() throws Exception{
+        try{
+            String query = "SELECT * FROM usluga";
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(query);
+            List<Usluga> usluge = new ArrayList<>();
+            
+            while(rs.next()){
+                Usluga usluga = new Usluga();
+                usluga.setIdUsluge(rs.getLong("idUsluge"));
+                usluga.setNaziv(rs.getString("naziv"));
+                usluga.setOpis(rs.getString("opis"));
+                usluga.setProcenjenoTrajanje(rs.getInt("procenjenoTrajanje"));
+                usluga.setNapomenaZaPacijenta(rs.getString("napomenaZaPacijenta"));
+                
+                usluge.add(usluga);
+            }
+            return usluge;
+        }catch(Exception ex){
+            throw ex;
+        }
+    }
+    
+    public StavkaPregleda kreirajStavkaPregleda(StavkaPregleda stavkaPregleda) throws Exception{
+        try{
+            String query = "INSERT INTO stavkaPregleda (idPregleda, idUsluge) VALUES (?, ?)";
+            PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            ps.setLong(1, stavkaPregleda.getPregled().getIdPregleda());
+            ps.setLong(2, stavkaPregleda.getUsluga().getIdUsluge());
+            ps.executeUpdate();
+            ResultSet rs = ps.getGeneratedKeys();
+            if(rs.next()){
+                stavkaPregleda.setRb(rs.getLong(1));
+            }
+            return stavkaPregleda;
+        }catch(Exception ex){
+            throw ex;
+        }
+    }
+    
     
 }

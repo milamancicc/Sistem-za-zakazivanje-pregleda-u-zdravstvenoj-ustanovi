@@ -7,6 +7,8 @@ package logic;
 import domain.Doktor;
 import domain.Pacijent;
 import domain.Pregled;
+import domain.StavkaPregleda;
+import domain.Usluga;
 import java.util.List;
 import repository.DatabaseRepository;
 
@@ -23,7 +25,7 @@ public class Controller {
     
     
     
-    public Doktor prijaviSe(String korisnickoIme, String lozinka) throws Exception{
+    public Doktor prijaviDoktor(String korisnickoIme, String lozinka) throws Exception{
         try{
             databaseRepository.connect();
             Doktor doktor = databaseRepository.getDoktorByKorisnickoIme(korisnickoIme);
@@ -45,10 +47,10 @@ public class Controller {
         
     }
     
-    public List<Pregled> getPreglediByDoktor(Doktor doktor) throws Exception{
+    public List<Pregled> vratiListuPregled(Doktor doktor) throws Exception{
         try{
             databaseRepository.connect();
-            List<Pregled> pregledi = databaseRepository.getPreglediByDoktor(doktor);
+            List<Pregled> pregledi = databaseRepository.vratiListuPregled(doktor);
             databaseRepository.disconnect();
             return pregledi;
         }catch(Exception ex){
@@ -70,10 +72,10 @@ public class Controller {
         }
     }
     
-    public void kreirajPregled(Pregled pregled) throws Exception{
+    public void promeniPregled(Pregled pregled) throws Exception{
         try{
             databaseRepository.connect();
-            databaseRepository.kreirajPregled(pregled);
+            databaseRepository.promeniPregled(pregled);
             databaseRepository.commit();
             
         }catch(Exception ex){
@@ -84,10 +86,10 @@ public class Controller {
         }
     }
     
-    public List<Pacijent> getAllPacijent() throws Exception{
+    public List<Pacijent> vratiListuPacijent() throws Exception{
         try{
             databaseRepository.connect();
-            List<Pacijent> pacijenti = databaseRepository.getAllPacijent();
+            List<Pacijent> pacijenti = databaseRepository.vratiListuPacijent();
             databaseRepository.disconnect();
             return pacijenti;
         }catch(Exception ex){
@@ -95,4 +97,41 @@ public class Controller {
         }
     }
     
+    public void obrisiPregled(Pregled pregled) throws Exception{
+        try{
+            databaseRepository.connect();
+            databaseRepository.obrisiPregled(pregled);
+            databaseRepository.commit();
+        }catch(Exception ex){
+            databaseRepository.rollback();
+            throw ex;
+        }finally{
+            databaseRepository.disconnect();
+        }
+    }
+    
+    public List<Usluga> vratiListuUsluga() throws Exception{
+        try{
+            databaseRepository.connect();
+            List<Usluga> usluge = databaseRepository.vratiListuUsluga();
+            databaseRepository.disconnect();
+            return usluge;
+        }catch(Exception ex){
+            throw ex;
+        }
+    }
+    
+    public StavkaPregleda kreirajStavkaPregleda(StavkaPregleda stavkaPregleda) throws Exception{
+        try{
+            databaseRepository.connect();
+            stavkaPregleda = databaseRepository.kreirajStavkaPregleda(stavkaPregleda);
+            databaseRepository.commit();
+            return stavkaPregleda;
+        }catch(Exception ex){
+            databaseRepository.rollback();
+            throw ex;
+        }finally{
+            databaseRepository.disconnect();
+        }
+    }
 }

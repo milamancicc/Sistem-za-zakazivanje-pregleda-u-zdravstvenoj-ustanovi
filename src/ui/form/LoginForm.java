@@ -187,7 +187,7 @@ public class LoginForm extends javax.swing.JFrame {
         String lozinka = new String(txtLozinka.getPassword());
         Controller controller = new Controller();
         try {
-            Doktor doktor = controller.prijaviSe(korisnickoIme, lozinka);
+            Doktor doktor = controller.prijaviDoktor(korisnickoIme, lozinka);
             this.dispose();
             new MainForm(doktor).setVisible(true);
         } catch (Exception ex) {

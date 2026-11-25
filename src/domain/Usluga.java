@@ -57,6 +57,16 @@ public class Usluga {
     public void setNapomenaZaPacijenta(String napomenaZaPacijenta) {
         this.napomenaZaPacijenta = napomenaZaPacijenta;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(naziv);
+        sb.append(", ").append(procenjenoTrajanje);
+        sb.append("min");
+        return sb.toString();
+    }
+    
     
     
 }

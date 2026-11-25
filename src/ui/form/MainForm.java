@@ -341,10 +341,10 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JLabel txtSpecijalizacija;
     // End of variables declaration//GEN-END:variables
 
-    private void initTable(Doktor doktor) {
+    public void initTable(Doktor doktor) {
         try {
             Controller controller = new Controller();
-            List<Pregled> pregledi = controller.getPreglediByDoktor(doktor);
+            List<Pregled> pregledi = controller.vratiListuPregled(doktor);
             if(pregledi == null || pregledi.isEmpty()){
                 txtNemaPregleda.setVisible(true);
                 txtNemaPregleda.setText("Nemate preglede.");
