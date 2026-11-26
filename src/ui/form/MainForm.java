@@ -312,9 +312,7 @@ public class MainForm extends javax.swing.JFrame {
     private void itmKreirajPregledActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itmKreirajPregledActionPerformed
         try {
             // TODO add your handling code here:
-            Controller controller = new Controller();
-            Pregled pregled = controller.kreirajPregled();
-            new KreirajPregledForm(this, true, this.doktor, pregled).setVisible(true);
+            new KreirajPregledForm(this, true, this.doktor).setVisible(true);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
         }

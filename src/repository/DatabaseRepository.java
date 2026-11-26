@@ -64,7 +64,7 @@ public class DatabaseRepository {
     }
     
     
-    public Doktor getDoktorByKorisnickoIme(String korisnickoIme) throws Exception{
+    public Doktor prijaviDoktor(String korisnickoIme) throws Exception{
         try{
             String query = "SELECT * FROM doktor WHERE korisnickoIme = ?";
             PreparedStatement ps = connection.prepareStatement(query);
@@ -84,7 +84,6 @@ public class DatabaseRepository {
             }
             return null;
         }catch(Exception ex){
-            ex.printStackTrace();
             throw ex;
         }
     }
@@ -127,26 +126,10 @@ public class DatabaseRepository {
     }
     
     
-    public Pregled kreirajPregled() throws Exception{
+    public Pregled ubaciPregled(Pregled pregled) throws Exception{
         try{
-            String query = "INSERT INTO pregled (datumIVreme, oznakaOrdinacije, brojUsluga, ukupnoTrajanje, napomena, idDoktora, idPacijenta) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL)";
+            String query = "INSERT INTO pregled (datumIVreme, oznakaOrdinacije, brojUsluga, ukupnoTrajanje, napomena, idDoktora, idPacijenta) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            ps.executeUpdate();
-            ResultSet rs = ps.getGeneratedKeys();
-            Pregled pregled = new Pregled();
-            if(rs.next()){
-                pregled.setIdPregleda(rs.getLong(1));
-            }
-            return pregled;
-        }catch(Exception ex){
-            throw ex;
-        }
-    }
-    
-    public void promeniPregled(Pregled pregled) throws Exception{
-        try{
-            String query = "UPDATE pregled SET datumIVreme = ?, oznakaOrdinacije = ?, brojUsluga = ?, ukupnoTrajanje = ?, napomena = ?, idDoktora = ?, idPacijenta = ? WHERE idPregleda = ?";
-            PreparedStatement ps = connection.prepareStatement(query);
             ps.setTimestamp(1, Timestamp.valueOf(pregled.getDatumIVreme()));
             ps.setString(2, pregled.getOznakaOrdinacije());
             ps.setInt(3, pregled.getBrojUsluga());
@@ -154,15 +137,18 @@ public class DatabaseRepository {
             ps.setString(5, pregled.getNapomena());
             ps.setLong(6, pregled.getDoktor().getIdDoktora());
             ps.setLong(7, pregled.getPacijent().getIdPacijenta());
-            ps.setLong(8, pregled.getIdPregleda());
-            ps.execute();
-            
+            ps.executeUpdate();
+            ResultSet rs = ps.getGeneratedKeys();
+            if(rs.next())
+                pregled.setIdPregleda(rs.getLong(1));
+            return pregled;
         }catch(Exception ex){
             throw ex;
         }
     }
     
-    public List<Pacijent> vratiListuPacijent() throws Exception{
+    
+    public List<Pacijent> vratiListuSviPacijent() throws Exception{
         try{
             String query = "SELECT * FROM pacijent INNER JOIN grad ON pacijent.zipkod = grad.zipkod";
             Statement statement = connection.createStatement();
@@ -192,24 +178,12 @@ public class DatabaseRepository {
         }
     }
     
-    public void obrisiPregled(Pregled pregled) throws Exception{
-        try{
-            String query = "DELETE FROM pregled WHERE idPregleda = ?";
-            PreparedStatement ps = connection.prepareStatement(query);
-            ps.setLong(1, pregled.getIdPregleda());
-            ps.executeUpdate();
-        }catch(Exception ex){
-            throw ex;
-        }
-    }
-    
-    public List<Usluga> vratiListuUsluga() throws Exception{
+    public List<Usluga> vratiListuSviUsluga() throws Exception{
         try{
             String query = "SELECT * FROM usluga";
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
             List<Usluga> usluge = new ArrayList<>();
-            
             while(rs.next()){
                 Usluga usluga = new Usluga();
                 usluga.setIdUsluge(rs.getLong("idUsluge"));
@@ -226,22 +200,25 @@ public class DatabaseRepository {
         }
     }
     
-    public StavkaPregleda kreirajStavkaPregleda(StavkaPregleda stavkaPregleda) throws Exception{
+    
+    public void ubaciStavkaPregleda(StavkaPregleda stavkaPregleda) throws Exception{
         try{
-            String query = "INSERT INTO stavkaPregleda (idPregleda, idUsluge) VALUES (?, ?)";
-            PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            String query = "INSERT INTO stavkapregleda (idPregleda, rb, simptomi, napomena, hitnost, idUsluge) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement ps = connection.prepareStatement(query);
             ps.setLong(1, stavkaPregleda.getPregled().getIdPregleda());
-            ps.setLong(2, stavkaPregleda.getUsluga().getIdUsluge());
-            ps.executeUpdate();
-            ResultSet rs = ps.getGeneratedKeys();
-            if(rs.next()){
-                stavkaPregleda.setRb(rs.getLong(1));
-            }
-            return stavkaPregleda;
+            ps.setLong(2, stavkaPregleda.getRb());
+            ps.setString(3, stavkaPregleda.getSimptomi());
+            ps.setString(4, stavkaPregleda.getNapomena());
+            ps.setBoolean(5, stavkaPregleda.isHitnost());
+            ps.setLong(6, stavkaPregleda.getUsluga().getIdUsluge());
+            ps.execute();
         }catch(Exception ex){
             throw ex;
         }
     }
+    
+    
+   
     
     
 }

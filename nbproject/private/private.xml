@@ -3,11 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/PC/OneDrive/Desktop/Sedmi%20semestar/Projektovanje%20softvera/Projekat/src/repository/DatabaseRepository.java</file>
             <file>file:/C:/Users/PC/OneDrive/Desktop/Sedmi%20semestar/Projektovanje%20softvera/Projekat/src/ui/form/KreirajPregledForm.java</file>
-            <file>file:/C:/Users/PC/OneDrive/Desktop/Sedmi%20semestar/Projektovanje%20softvera/Projekat/src/logic/Controller.java</file>
+            <file>file:/C:/Users/PC/OneDrive/Desktop/Sedmi%20semestar/Projektovanje%20softvera/Projekat/src/ui/components/StavkePregledaTableModel.java</file>
+            <file>file:/C:/Users/PC/OneDrive/Desktop/Sedmi%20semestar/Projektovanje%20softvera/Projekat/src/repository/DatabaseRepository.java</file>
+            <file>file:/C:/Users/PC/OneDrive/Desktop/Sedmi%20semestar/Projektovanje%20softvera/Projekat/src/domain/StavkaPregleda.java</file>
             <file>file:/C:/Users/PC/OneDrive/Desktop/Sedmi%20semestar/Projektovanje%20softvera/Projekat/src/ui/form/MainForm.java</file>
-            <file>file:/C:/Users/PC/OneDrive/Desktop/Sedmi%20semestar/Projektovanje%20softvera/Projekat/src/App.java</file>
         </group>
     </open-files>
 </project-private>

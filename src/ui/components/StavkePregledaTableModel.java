@@ -6,6 +6,8 @@ package ui.components;
 
 import domain.StavkaPregleda;
 import java.util.List;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -15,8 +17,8 @@ import javax.swing.table.AbstractTableModel;
 public class StavkePregledaTableModel extends AbstractTableModel {
 
     private List<StavkaPregleda> stavkePregleda;
-    private String[] columnNames = {"RB", "Usluga", "Opis", "Trajanje", "Simptomi", "Napomena", "Hitnost"};
-    private Class[] columnClasses = {Long.class, String.class, String.class, int.class, String.class, String.class, Boolean.class};
+    private String[] columnNames = {"RB", "Usluga", "Opis", "Trajanje", "Simptomi", "Napomena", "Hitnost", "Obriši"};
+    private Class[] columnClasses = {Long.class, String.class, String.class, int.class, String.class, String.class, Boolean.class, JButton.class};
 
     public StavkePregledaTableModel(List<StavkaPregleda> stavkePregleda) {
         this.stavkePregleda = stavkePregleda;
@@ -45,6 +47,7 @@ public class StavkePregledaTableModel extends AbstractTableModel {
             case 4 -> stavkaPregleda.getSimptomi();
             case 5 -> stavkaPregleda.getNapomena();
             case 6 -> stavkaPregleda.isHitnost();
+            case 7 -> "Obriši";
             default -> "n/a";
         };
     }
@@ -58,6 +61,31 @@ public class StavkePregledaTableModel extends AbstractTableModel {
     public Class<?> getColumnClass(int columnIndex) {
         return columnClasses[columnIndex];
     }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return (columnIndex == 4 || columnIndex == 5 || columnIndex == 6);
+    }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        StavkaPregleda stavkaPregleda = stavkePregleda.get(rowIndex);
+        switch (columnIndex) {
+            case 4:
+                stavkaPregleda.setSimptomi((String) aValue);
+                break;
+            case 5:
+                stavkaPregleda.setNapomena((String) aValue);
+                break;
+            case 6:
+                stavkaPregleda.setHitnost((boolean) aValue);
+                break;
+            default:
+                throw new AssertionError();
+        }
+    }
+    
+    
     
     
     

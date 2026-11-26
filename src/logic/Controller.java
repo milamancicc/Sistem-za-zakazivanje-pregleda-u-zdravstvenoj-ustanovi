@@ -28,7 +28,7 @@ public class Controller {
     public Doktor prijaviDoktor(String korisnickoIme, String lozinka) throws Exception{
         try{
             databaseRepository.connect();
-            Doktor doktor = databaseRepository.getDoktorByKorisnickoIme(korisnickoIme);
+            Doktor doktor = databaseRepository.prijaviDoktor(korisnickoIme);
             databaseRepository.disconnect();
             if(korisnickoIme == null || korisnickoIme.isEmpty())
                 throw new Exception("Nije uneto korisničko ime.");
@@ -58,10 +58,10 @@ public class Controller {
         }
     }
     
-    public Pregled kreirajPregled() throws Exception{
+    public Pregled ubaciPregled(Pregled pregled) throws Exception{
         try{
             databaseRepository.connect();
-            Pregled pregled = databaseRepository.kreirajPregled();
+            databaseRepository.ubaciPregled(pregled);
             databaseRepository.commit();
             return pregled;
         }catch(Exception ex){
@@ -72,24 +72,10 @@ public class Controller {
         }
     }
     
-    public void promeniPregled(Pregled pregled) throws Exception{
+    public List<Pacijent> vratiListuSviPacijent() throws Exception{
         try{
             databaseRepository.connect();
-            databaseRepository.promeniPregled(pregled);
-            databaseRepository.commit();
-            
-        }catch(Exception ex){
-            databaseRepository.rollback();
-            throw ex;
-        }finally{
-            databaseRepository.disconnect();
-        }
-    }
-    
-    public List<Pacijent> vratiListuPacijent() throws Exception{
-        try{
-            databaseRepository.connect();
-            List<Pacijent> pacijenti = databaseRepository.vratiListuPacijent();
+            List<Pacijent> pacijenti = databaseRepository.vratiListuSviPacijent();
             databaseRepository.disconnect();
             return pacijenti;
         }catch(Exception ex){
@@ -97,23 +83,10 @@ public class Controller {
         }
     }
     
-    public void obrisiPregled(Pregled pregled) throws Exception{
+    public List<Usluga> vratiListuSviUsluga() throws Exception{
         try{
             databaseRepository.connect();
-            databaseRepository.obrisiPregled(pregled);
-            databaseRepository.commit();
-        }catch(Exception ex){
-            databaseRepository.rollback();
-            throw ex;
-        }finally{
-            databaseRepository.disconnect();
-        }
-    }
-    
-    public List<Usluga> vratiListuUsluga() throws Exception{
-        try{
-            databaseRepository.connect();
-            List<Usluga> usluge = databaseRepository.vratiListuUsluga();
+            List<Usluga> usluge = databaseRepository.vratiListuSviUsluga();
             databaseRepository.disconnect();
             return usluge;
         }catch(Exception ex){
@@ -121,17 +94,16 @@ public class Controller {
         }
     }
     
-    public StavkaPregleda kreirajStavkaPregleda(StavkaPregleda stavkaPregleda) throws Exception{
+    public void ubaciStavkaPregleda(StavkaPregleda stavkaPregleda) throws Exception{
         try{
             databaseRepository.connect();
-            stavkaPregleda = databaseRepository.kreirajStavkaPregleda(stavkaPregleda);
+            databaseRepository.ubaciStavkaPregleda(stavkaPregleda);
             databaseRepository.commit();
-            return stavkaPregleda;
         }catch(Exception ex){
-            databaseRepository.rollback();
             throw ex;
         }finally{
             databaseRepository.disconnect();
         }
     }
+    
 }
